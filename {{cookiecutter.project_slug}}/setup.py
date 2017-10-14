@@ -50,6 +50,8 @@ class Venv(setuptools.Command):
 
         print('Creating virtual environment in ', venv_path)
         subprocess.check_call(venv_cmd)
+        print('Installing flake8')
+        subprocess.check_call(['{}/bin/pip'.format(venv_path), 'install', 'flake8'])
         print('Linking `activate` to top level of project.\n')
         print('To activate, simply run `source activate`.')
         try:
