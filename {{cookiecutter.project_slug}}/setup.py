@@ -1,5 +1,6 @@
 import setuptools
 import subprocess
+import os
 
 
 INSTALL_REQUIRES = [
@@ -25,20 +26,28 @@ TESTS_REQUIRE = [
 
 
 class Venv(setuptools.Command):
-    user_options = []
+    description = "Create a python virtual environment for this project"
+    user_options = [
+        ('python=', 'p', 'PYTHON_EXE'),
+    ]
 
     def initialize_options(self):
         """Abstract method that is required to be overwritten"""
+        self.python = None
 
     def finalize_options(self):
         """Abstract method that is required to be overwritten"""
 
     def run(self):
         venv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'venv', '{{ cookiecutter.project_slug }}')
-        venv_cmd = [
-            'virtualenv',
-            venv_path
-        ]
+
+        venv_cmd = []
+        venv_cmd.append('virtualenv')
+        if self.python is not None:
+            venv_cmd.append('-p')
+            venv_cmd.append(self.python)
+        venv_cmd.append(venv_path)
+
         print('Creating virtual environment in ', venv_path)
         subprocess.check_call(venv_cmd)
         print('Linking `activate` to top level of project.\n')
